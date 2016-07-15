@@ -1,0 +1,114 @@
+
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+#inputform1 {padding-left:30px;width:400px;height:35px;float:left}
+#souinput {margin-top:30px;width:240px;height:35px;float:left}
+#seabtn {margin-top:30px;height:35px}
+#cmtdiv {padding-left:30px;margin-top:30px}
+#dropdownMenu1 {margin-top:30px}
+#fileform {padding-left:40px;width:1800px}
+#s1 {margin-top:30px;margin-left:30px;width:70px;}
+#s2 {margin-top:30px;margin-left:30px;width:140px;}
+#rzcount {margin-top:10px;margin-left:30px}
+</style>
+<body>
+<div class="row">
+	<div class="col-md-4">
+      		<div class="form-group" id="inputform1">
+        	<input id="souinput" class="form-control" rows="3" placeholder="输入要搜索的字段"></input>
+		<button id="seabtn" type="button">搜索</button>
+      		</div>
+		<div id="divnull"></div> 
+	</div>
+	
+	<div class="col-md-1 btn-group">
+		<div class="dropdown">
+		<select class="form-control" id="s1">
+        <option ckvalue="day1">1天</option>
+        <option ckvalue="day3">3天</option>
+        <option ckvalue="day7">7天</option>
+	    </select>		
+		</div>				    
+	</div>
+	<div class="col-md-2 btn-group">
+		<div class="dropdown">
+		<select class="form-control" id="s2">
+        <option ckvalue="day1">每页10条</option>
+        <option ckvalue="day3">每页50条</option>
+        <option ckvalue="day7">每页100条</option>
+	    </select>		
+		</div>				    
+	</div>
+</div>
+	<div id="rzcount"></div>
+
+<div style="display:none;" class="col-md-5" id="gifld">
+	<img id="imgld1" src="/static/imgs/ld1.gif">
+</div>
+
+<div class="row">
+          <div id="fileform" class="col-md-11">
+                <table class="table table-striped table-bordered table-bordered dataTable no-footer">
+                        <thead>
+                                <tr>
+					<th>告警时间</th>
+                                        <th>设备地址</th>
+					<th>告警内容</th>
+					<th>监控项</th>
+                                        <th>最新数据</th>
+                                        <th>发送时间</th>                                
+                                        <th>发送媒介</th>                                
+                                        <th>接收者</th>                                
+                                        <th>告警级别</th>                                
+                                        <th>发送状态</th>                                
+                                </tr>
+                        </thead>
+                        <tbody id='table-content'>
+
+                        </tbody>
+                </table>
+                <ul id='pagination' class="pagination">
+
+                </ul>
+          </div>
+</div>
+
+<script>
+
+                function getList(page){
+			var dateinfo = $("#s1").val()
+			var count = $("#s2").val()
+			var modname = $("#souinput").val()
+                        var url = '/zbxquery/monquery?modname='+modname+'&dateinfo='+dateinfo+'&count='+count
+                        if (page) {
+                                url = url + '&page=' + page
+                        };
+			$("#gifld").show()
+                        $.getJSON(url,function(retdata){
+				$("#gifld").hide()
+                                console.log(retdata)
+				$('#table-content').html(retdata.table_str)
+				$('#pagination').html(retdata.pagation_str)
+				$('#rzcount').html(retdata.rzcount)
+                        })              
+                }
+
+                getList()
+
+	  $("#seabtn").click(function(){ 
+		getList()
+	  })
+
+          $(document).on('click','.page-reboot',function(){
+          	var page = $(this).attr('data-page')
+                getList(page)
+                return false
+          })
+
+</script>
+
+</body>
+
+{% endblock %}

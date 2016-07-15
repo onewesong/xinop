@@ -1,0 +1,75 @@
+    
+        {% extends "base.html" %}
+        {% block content %}
+
+    <body>
+	<div id="container" style="height: 310px"></div>
+	<div id="container1" style="height: 310px"></div>
+    </body>
+
+        <script>
+
+     Highcharts.setOptions({ global: { useUTC: false } });   
+
+		$(function () {
+    			$.getJSON('/cdn/bwmondata?ctest=?', function (rt) {
+        // Create a chart
+        		$('#container').highcharts('StockChart', {
+            		rangeSelector: {
+                		inputEnabled: $('#container').width() > 480,
+                		selected: 1
+            			},
+            		title: {
+                		text: '网宿带宽'
+            		},
+
+        		yAxis: {  
+            			title: {
+                			text: '单位 ：Mbps'  
+            			},  
+				tickInterval: 500
+        		}, 
+
+           		series: [{
+                		name: 'ws',
+                		data: rt['wangsu'],
+                		type: 'spline',
+                		tooltip: {
+                    		valueDecimals: 2
+                		}
+            		}]
+		});
+	// Create another chart
+			$('#container1').highcharts('StockChart', {
+			rangeSelector: {
+                		inputEnabled: $('#container1').width() > 480,
+                		selected: 1
+            			},
+            		title: {
+                		text: '白山云带宽'
+            		},
+
+                        yAxis: {  
+                                title: {
+                                        text: '单位 ：Mbps'  
+                                },  
+				tickInterval: 500
+                        },
+
+            		series: [{
+                		name: 'bsy',
+                		data: rt['baishanyun'],
+                		type: 'spline',
+                		tooltip: {
+                    		valueDecimals: 2
+                		}
+            		}]
+        	});
+    	});
+	});
+</script>
+
+{% endblock %}
+
+
+

@@ -1,0 +1,114 @@
+
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+#inputform1 {padding-left:30px;}
+#fileipinput {height:50px;width:400px}
+#cmtdiv {padding-left:30px;margin-top:30px}
+#dropdownMenu1 {margin-top:30px}
+#fileform {padding-left:40px;}
+#domainname {padding-left:40px;}
+#rtime {padding-left:40px;}
+#qcount {padding-left:40px;}
+#rzok {padding-left:40px;}
+#rzerror {padding-left:40px;}
+#title2 {padding-left:27px; font-weight:bold; font-size:16px;}
+</style>	
+	<br></br>
+
+<div class="row">
+	<div class="col-md-6">
+      		<div class="form-group" id="inputform1">
+        	<label for="name">输入要查询的rsync模块名</label>
+		<p></p>
+        	<input id="fileipinput" class="form-control" rows="3" placeholder=" com开头显示所有模块 "></textarea>
+      		</div>
+		<div id="divnull"></div> 
+	</div>
+	
+	<div class="col-md-3" id="cmtdiv">
+		<button id="cmdcommit" type="button" class="btn btn-primary btn-lg">查询</button>
+	</div>		
+</div>
+</br>
+
+<div style="display:none;" class="col-md-5" id="gifld">
+	<img id="imgld1" src="/static/imgs/ld1.gif">
+</div>
+
+<div class="row" id="domainname">
+</div>
+</p><p>
+
+<div class="row" id="rtime">
+</div>
+</p><p>
+
+<div class="row" id="qcount">
+</div>
+</p><p>
+
+<p id="title2">同步详情（蓝字为同步的列表（服务器：目录md5值），红字为不同步的列表（服务器：不同步的文件））</p>
+
+<div class="row" id="rzok">
+</div>
+
+</p><p>
+<div class="row" id="rzerror">
+</div>
+</br>
+
+<script>
+
+function getdata(inputcname){
+        res = $.ajax({url:'/orsync/rsyncautoapi?cname='+inputcname,async:false}) //向后台接口/cmdautoapi/发同步ajax请求(async:false),得到返回的数据res
+        //alert(res)
+        //console.log(res)
+        serdata = res['responseText']   //json数据res的'responseText'即是后台数据(json串)
+        ck = eval(serdata)      //把此json串转换成数组
+        return ck       //返回此数组
+  }
+
+$("#fileipinput").autocomplete({ 
+        source: getdata("com")
+  })    
+
+  $("#cmdcommit").click(function(){ 
+    $("#gifld").show()
+    var modname = $("#fileipinput").val()
+    var url = '/orsync/filecheck?modname='+modname
+    $.getJSON(url,function(retdata){ 
+	//alert(retdata['filepaths'])
+    console.log(retdata)
+    if (retdata.msg != '')
+    {
+    $("#gifld").hide()
+    $('#rzerror').html(retdata.msg)
+	}
+    else
+    {
+	if (retdata.info != '')
+		{
+	$("#gifld").hide()
+	$('#domainname').html(retdata.domainname)
+	$('#rtime').html(retdata.time)
+	$('#rzok').html(retdata.info)
+	}
+	else
+	{
+    $("#gifld").hide()
+    $('#domainname').html(retdata.domainname)
+    $('#rtime').html(retdata.time)
+    $('#qcount').html(retdata.qcount)
+    $('#rzok').html(retdata.okinfo)
+    $('#rzerror').html(retdata.errorinfo)
+	}
+	    }
+      })
+  })
+
+</script>
+
+{% endblock %}
+

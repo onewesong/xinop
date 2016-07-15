@@ -1,0 +1,119 @@
+
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+#inputform1 {padding-left:30px;}
+#cmdinput {height:100px;width:600px}
+#cmtdiv {padding-left:30px;margin-top:30px}
+#dropdownMenu1 {margin-top:30px}
+#fileform {padding-left:40px;width:1500px}
+#s1 {margin-top:30px;margin-left:30px;width:100px;}
+#rzcount {margin-top:30px;}
+#modinput {height:50px;width:350px}
+</style>	
+	<br></br>
+
+<div class="row">
+	<div class="col-md-4">
+		<form>
+      		<div class="form-group" id="inputform1">
+        	<label for="name">输入模块名</label>
+        	<textarea id="modinput" class="form-control" rows="3" placeholder="com开头显示所有模块"></textarea>
+        	<p></p>
+      		</div>
+    	</form>
+		<div id="divnull"></div> 
+	</div>
+	
+	<div class="col-md-2 btn-group">
+		<div class="dropdown">
+		<select class="form-control" id="s1">
+        <option ckvalue="day1">一天内</option>
+        <option ckvalue="day3">三天内</option>
+        <option ckvalue="day7">本周内</option>
+	    </select>		
+		</div>				    
+	</div>
+	<div class="col-md-1" id="cmtdiv">
+		<button id="cmdcommit" type="button" class="btn btn-primary btn-lg">查询</button>
+	</div>		
+	<div class="col-md-5" id="rzcount">
+
+	</div>
+</div>
+<p></p>
+<div class="row">
+          <div id="fileform" class="col-md-11">
+                <table class="table table-striped table-bordered table-bordered dataTable no-footer">
+                        <thead>
+                                <tr>
+					<th>上线时间</th>
+                                        <th>模块名</th>
+                                        <th>上线结果</th>
+                                        <th>文件数</th>
+                                        <th>文件路径</th>                                
+                                </tr>
+                        </thead>
+                        <tbody id='table-content'>
+
+                        </tbody>
+                </table>
+          </div>
+</div>
+
+<script>
+
+                function getList(page){
+			var dateinfo = ($("#s1").val())
+			var modname = $("#modinput").val()
+                        var url = '/orsync/rycfilesquery?modname='+modname+'&dateinfo='+dateinfo
+                        if (page) {
+                                url = url+'?page='+page
+                        };
+                        $.getJSON(url,function(retdata){
+                                console.log(retdata)
+				$('#table-content').html(retdata.table_str)
+				$('#rzcount').html(retdata.rzcount)
+                        })              
+                }
+
+                getList()
+
+	  $("#cmdcommit").click(function(){ 
+	    var dateinfo = ($("#s1").val())
+	    var modname=$("#modinput").val()
+	    var url='/orsync/rycfilesquery?modname='+modname+'&dateinfo='+dateinfo
+	    $.getJSON(url,function(retdata){ 
+		//alert(retdata['filepaths'])
+	    $('#table-content').html(retdata.table_str)
+	    $('#rzcount').html(retdata.rzcount)
+	      })
+	  })
+
+		$(document).on('click','.showxq',function(){
+                        var id = $(this).attr('data-id')
+                        var url = '/orsync/rycfilesquery?id='+id+'&showinfo=showinfo'
+                        $.get(url,function(res){                
+                                        alert(res)
+                        })
+                })
+
+	function getdata(inputcname){
+        res = $.ajax({url:'/orsync/rsyncautoapi?cname='+inputcname,async:false}) //向后台接口/cmdautoapi/发同步ajax请求(async:false),得到返回的数据res
+        //alert(res)
+        //console.log(res)
+        serdata = res['responseText']   //json数据res的'responseText'即是后台数据(json串)
+        ck = eval(serdata)      //把此json串转换成数组
+        return ck       //返回此数组
+  	}
+
+	$("#modinput").autocomplete({ 
+        source: getdata("com")
+  	}) 
+
+</script>
+
+{% endblock %}
+
+

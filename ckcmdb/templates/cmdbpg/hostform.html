@@ -1,0 +1,395 @@
+
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+.inp {width:330px; height:30px;}
+.cbtn {width:50px; height:30px;}
+.ncar {width:150px; height:30px;}
+.wdh {width:120px; height:30px;}
+.ncarname {width:90px; height:30px;}
+.nport {width:80px; height:30px;}
+#diskgt {height:30px;width:60px;}
+#diskraid {height:30px;width:80px;}
+#hipt1 {width:150px;}
+#hipt2 {width:150px;}
+#hipt3 {height:30px;width:70px;}
+#hipt11 {width:150px;}
+#hipt12 {width:100px;}
+#hipt13 {width:150px;}
+#hipt14 {width:150px;}
+#hipt15 {width:180px;}
+#hipt16 {width:180px;}
+#hipt17 {height:30px;width:70px;}
+#hipt18 {height:30px;width:120px;}
+#hipt94 {width:180px;}
+#usize {height:30px;width:50px;}
+#nd3 {width:150px;}
+#nd5 {height:30px;width:70px;}
+#nd4 {width:150px;}
+</style>
+<br/>
+<ul id="myTab" class="nav nav-tabs">
+   <li class="active"><a href="#ser" data-toggle="tab">服务器</a></li>
+   <li><a href="#rou" data-toggle="tab">网络设备</a></li>
+   <li><a href="#swt" data-toggle="tab">其他</a></li>
+</ul>
+<br/>
+<div id="myTabContent" class="tab-content">
+  <div class="tab-pane fade in active" id="ser">
+        <label>主机类型</label>&nbsp&nbsp
+        <select id="hipt18">
+        <option value="物理机">物理机</option>
+        <option value="虚拟化/宿主机">虚拟化/宿主机</option>
+        <option value="虚拟化/虚拟机">虚拟化/虚拟机</option>
+        </select>&nbsp&nbsp
+	<label id="lhipt94" style="display: none;">宿主机IP</label>&nbsp&nbsp
+	<input id="hipt94" style="display: none;" type="text" name="vhostip" class="inp" placeholder="宿主机IP"/>&nbsp&nbsp
+        <label>操作系统</label>&nbsp&nbsp
+        <input id="hipt13" type="text" name="idccontacts" class="inp" placeholder="osversion"/>&nbsp&nbsp
+        <label>业务类型</label>&nbsp&nbsp
+        <input id="hipt14" type="text" name="idccontacts" class="inp" placeholder="www.xin.com"/><br/>
+        <br/>
+	<label id="lhipt1">设备型号</label>&nbsp&nbsp
+	<input id="hipt1" type="text" name="idcname" class="inp" placeholder="Dell R720"/>&nbsp&nbsp 
+	<label id="lusize">机型</label>&nbsp&nbsp
+        <select id="usize">
+        <option value="1U">1U</option>
+        <option value="2U">2U</option>
+        <option value="4U">4U</option>
+        </select>&nbsp&nbsp
+	<br/>
+	<br/>
+	<label id="lhipt40">CPU核心数</label>&nbsp&nbsp
+	<input id="hipt40" type="text" name="idcaddr" class="inp wdh" placeholder="12"/>&nbsp&nbsp
+	<br/>
+	<br/>
+	<label id="lhipt5">内存（个数）</label>&nbsp&nbsp
+	<input id="hipt5" type="text" name="idcnote" class="inp wdh" placeholder="8"/>&nbsp&nbsp
+	<label id="lhipt50">单内存容量</label>&nbsp&nbsp
+	<input id="hipt50" type="text" name="idcnote" class="inp wdh" placeholder="16"/>&nbspGB
+	<br/>
+	<br/>
+	<label id="lhipt6">磁盘（个数）</label>&nbsp&nbsp
+	<input id="hipt6" type="text" name="idcnote" class="inp wdh" placeholder="6"/>&nbsp&nbsp
+	<label id="ldiskraid">RAID级别</label>&nbsp&nbsp
+	<select id="diskraid">
+        <option value="RAID 0">raid 0</option>
+        <option value="RAID 1">raid 1</option>
+        <option value="RAID 5">raid 5</option>
+        <option value="RAID 10">raid 10</option>
+        </select>&nbsp&nbsp
+	<label>单磁盘容量</label>&nbsp&nbsp
+	<input id="hipt60" type="text" name="idcnote" class="inp wdh" placeholder="600"/>&nbsp
+	<select id="diskgt">
+	<option value="GB">GB</option>
+	<option value="TB">TB</option>
+	</select>
+	<br/>
+	<br/>
+	<label id="lhipt7">网卡1</label>&nbsp&nbsp
+	<input id="hipt7" type="text" name="idcnote" class="inp ncarname" placeholder="eth0"/>&nbsp&nbsp
+	<label id="lhipt70">IP</label>&nbsp&nbsp
+	<input id="hipt70" type="text" name="idcaddr" class="inp ncar" placeholder=""/>&nbsp&nbsp
+	<label id="lhipt71">连接的交换机</label>&nbsp&nbsp
+	<input id="hipt71" type="text" name="idcnote" class="inp ncar" placeholder="DC1..."/>&nbsp&nbsp
+	<label id="lhipt72">端口</label>&nbsp&nbsp
+	<input id="hipt72" type="text" name="idcnote" class="inp nport" placeholder="7"/>&nbsp&nbsp
+	<label id="lhipt73">vlan</label>&nbsp&nbsp
+	<input id="hipt73" type="text" name="idcnote" class="inp nport" placeholder="vlan"/>
+	<br/>
+	<br/>
+	<label id="lhipt8">网卡2</label>&nbsp&nbsp
+	<input id="hipt8" type="text" name="idcnote" class="inp ncarname" placeholder="eth1"/>&nbsp&nbsp
+	<label id="lhipt80">IP</label>&nbsp&nbsp
+	<input id="hipt80" type="text" name="idcaddr" class="inp ncar" placeholder=""/>&nbsp&nbsp
+	<label id="lhipt81">连接的交换机</label>&nbsp&nbsp
+        <input id="hipt81" type="text" name="idcnote" class="inp ncar" placeholder="DC1..."/>&nbsp&nbsp
+        <label id="lhipt82">端口</label>&nbsp&nbsp
+        <input id="hipt82" type="text" name="idcnote" class="inp nport" placeholder="12"/>&nbsp&nbsp
+	<label id="lhipt83">vlan</label>&nbsp&nbsp
+	<input id="hipt83" type="text" name="idcnote" class="inp nport" placeholder="vlan"/>
+	<br/>
+	<br/>
+	<label id="lhipt9">管理卡</label>&nbsp&nbsp
+	<input id="hipt9" type="text" name="idcnote" class="inp ncarname" placeholder="eth2"/>&nbsp&nbsp
+	<label id="lhipt90">管理IP</label>&nbsp&nbsp
+	<input id="hipt90" type="text" name="idcaddr" class="inp ncar" placeholder=""/>&nbsp&nbsp
+	<label id="lhipt91">连接的交换机</label>&nbsp&nbsp
+        <input id="hipt91" type="text" name="idcnote" class="inp ncar" placeholder="DC1..."/>&nbsp&nbsp
+        <label id="lhipt92">端口</label>&nbsp&nbsp
+        <input id="hipt92" type="text" name="idcnote" class="inp nport" placeholder="25"/>&nbsp&nbsp
+	<label id="lhipt93">vlan</label>&nbsp&nbsp
+	<input id="hipt93" type="text" name="idcnote" class="inp nport" placeholder="vlan"/>
+	<br/>
+	<br/>
+	<label id="lhipt11">所在机柜</label>&nbsp&nbsp
+	<input id="hipt11" type="text" name="idccontacts" class="inp" placeholder="亦庄_rack_2"/>&nbsp&nbsp
+	<label id="lhipt12">在机柜的位置</label>&nbsp&nbsp
+        <input id="hipt12" type="text" name="idccontacts" class="inp" placeholder="3"/><br/>
+	<br/>
+	<label id="lhipt2">责任人</label>&nbsp&nbsp
+        <input id="hipt2" type="text" name="owner" class="inp" placeholder="3"/>&nbsp&nbsp
+        <label id="lhipt15">SN号</label>&nbsp&nbsp
+        <input id="hipt15" type="text" name="idccontacts" class="inp" placeholder="SN号"/>&nbsp&nbsp
+	<label>代码环境</label>&nbsp&nbsp
+        <select id="hipt17">
+        <option value="生产">生产</option>
+        <option value="测试">测试</option>
+        </select>&nbsp&nbsp
+	<label>运行状态</label>&nbsp&nbsp
+        <select id="hipt3">
+        <option value="在线">在线</option>
+        <option value="离线">离线</option>
+        </select>
+	<br/>
+	<br/>
+        <label>备注</label>&nbsp&nbsp
+        <input id="hipt16" type="text" name="idccontacts" class="inp" placeholder=""/><br/>
+        <br/>
+	<br/>
+	<button id='hostbtn' type="button" class="btn btn-primary">提交</button>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+	<br></br>
+	<br></br>
+	<div id="hostres">
+	</div>
+  </div>
+
+  <div class="tab-pane fade" id="rou">
+	<label>设备名</label>&nbsp&nbsp
+	<input id="nd1" type="text" name="ndname" class="inp" placeholder="DC1-N5K-1"/><br/>
+	<br/>
+	<label>设备型号</label>&nbsp&nbsp
+	<input id="nd9" type="text" name="ndname" class="inp" placeholder="Cisco"/><br/>&nbsp&nbsp
+	<br/>
+	<label>SN号</label>&nbsp&nbsp
+	<input id="nd3" type="text" name="assetlabel" class="inp" placeholder="SN号"/><br/>
+	<br/>
+	<label>所在机柜</label>&nbsp&nbsp
+	<input id="nd10" type="text" name="idccontacts" class="inp" placeholder="亦庄_rack_2"/>&nbsp&nbsp
+	<label>在机柜的位置</label>&nbsp&nbsp
+        <input id="nd4" type="text" name="idccontacts" class="inp" placeholder="3"/><br/>
+        <br/>
+        <label>责任人</label>&nbsp&nbsp
+        <input id="nd2" type="text" name="idccontacts" class="inp" placeholder="3"/>&nbsp&nbsp 
+	<label>运行状态</label>&nbsp&nbsp
+        <select id="nd5">
+        <option value="在线">在线</option>
+        <option value="离线">离线</option>
+        </select>
+        <br/>
+        <br/>
+	<label>备注</label>&nbsp&nbsp
+	<input id="nd8" type="text" name="racknote" class="inp" placeholder="备注"/><br/>
+	<br/>
+	<br/>
+	<input id='netdevicebtn' type="submit" class="cbtn" value="提交" />&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+	<input id='rsetbtn' type="reset" class="cbtn" value="重置">
+	<br></br>
+	<div id="ndres">
+        </div>
+  </div>
+  <div class="tab-pane fade" id="swt">
+	sssssswwwwwwwwwwwwwtttttt
+  </div>
+</div>
+
+</br>
+<script>
+$("#hostbtn").click(function(){
+        var devstyle=$('#hipt1').val()
+        var owner=$('#hipt2').val()
+        var insideip=$('#hipt70').val()
+        var outsideip=$('#hipt80').val()
+        var mngip=$('#hipt90').val()
+        var cpunum=$('#hipt40').val()
+        var memnum=$('#hipt5').val()
+        var memsize=$('#hipt50').val()
+        var disk=$('#hipt6').val()
+	var disksize=$('#hipt60').val()
+	var raid=$("#diskraid").val()
+	var diskgt=$("#diskgt").val()
+        var insidecard=$('#hipt7').val()
+        var insidesw=$('#hipt71').val()
+        var iport=$('#hipt72').val()
+        var ivlan=$('#hipt73').val()
+        var outsidecard=$('#hipt8').val()
+	var outsidesw=$('#hipt81').val()
+        var oport=$('#hipt82').val()
+        var ovlan=$('#hipt83').val()
+        var mngcard=$('#hipt9').val()
+	var mngsw=$('#hipt91').val()
+        var mngport=$('#hipt92').val()
+        var mngvlan=$('#hipt93').val()
+        var hrack=$('#hipt11').val()
+        var hsite=$('#hipt12').val()
+        var osversion=$('#hipt13').val()
+        var busstyle=$('#hipt14').val()
+        var assetnumber=$('#hipt15').val()
+        var remarks=$('#hipt16').val()
+        var codeenv=$('#hipt17').val()
+        var devicetype=$('#hipt18').val()
+        var vmhostip=$('#hipt94').val()
+        var runstatus=$('#hipt3').val()
+	var usize=$('#usize').val()
+	if (vmhostip != '')
+		{
+	var cmdbtype = 'vms'
+	var url='/cmdb/add?devicetype='+devicetype+'&vmhostip='+vmhostip+'&osversion='+osversion+'&busstyle='+busstyle+'&cpunum='+cpunum+'&memsize='+memsize+'&disk='+disk+'&disksize='+disksize+'&diskgt='+diskgt+'&insidecard='+insidecard+'&insideip='+insideip+'&codeenv='+codeenv+'&remarks='+remarks+'&cmdbtype='+cmdbtype+'&owner='+owner+'&runstatus='+runstatus+'&usize='+usize
+	}
+	else	
+		{
+	var cmdbtype = 'host'
+        var url='/cmdb/add?devstyle='+devstyle+'&cpunum='+cpunum+'&memnum='+memnum+'&memsize='+memsize+'&disk='+disk+'&disksize='+disksize+'&raid='+raid+'&diskgt='+diskgt+'&insidecard='+insidecard+'&insideip='+insideip+'&insidesw='+insidesw+'&iport='+iport+'&ivlan='+ivlan+'&outsidecard='+outsidecard+'&outsideip='+outsideip+'&outsidesw='+outsidesw+'&oport='+oport+'&ovlan='+ovlan+'&mngcard='+mngcard+'&mngip='+mngip+'&mngsw='+mngsw+'&mngport='+mngport+'&mngvlan='+mngvlan+'&hrack='+hrack+'&hsite='+hsite+'&osversion='+osversion+'&busstyle='+busstyle+'&codeenv='+codeenv+'&assetnumber='+assetnumber+'&remarks='+remarks+'&devicetype='+devicetype+'&cmdbtype='+cmdbtype+'&owner='+owner+'&runstatus='+runstatus+'&usize='+usize
+	}
+        $.getJSON(url,function(resdata){ 
+        $('#hostres').html(resdata.info)
+    })
+  })
+</script>
+
+<script>
+$("#netdevicebtn").click(function(){
+	var cmdbtype = 'netdevice'
+        var ndname=$('#nd1').val()
+        var ndassetlabel=$('#nd3').val()
+        var ndaddr=$('#nd4').val()
+        var ndnote=$('#nd8').val()
+        var ndstyle=$('#nd9').val()
+        var ndrack=$('#nd10').val()
+	var owner=$('#nd2').val()
+	var runstatus=$('#nd5').val()
+        var url='/cmdb/add?ndname='+ndname+'&ndassetlabel='+ndassetlabel+'&ndaddr='+ndaddr+'&ndnote='+ndnote+'&ndstyle='+ndstyle+'&ndrack='+ndrack+'&cmdbtype='+cmdbtype+'&owner='+owner+'&runstatus='+runstatus
+        $.getJSON(url,function(resdata){
+        $('#ndres').html(resdata.info)
+    })
+  })
+</script>
+
+<script>
+function getdata(inputcname){
+        res = $.ajax({url:'/cmdb/inputautoapi?cmdbipt='+inputcname,async:false}) //向后台接口 /cmdb/inputautoapi 发同步ajax请求(async:false),得到返回的数据res
+        //alert(res)
+        //console.log(res)
+        serdata = res['responseText']   //json数据res的'responseText'即是后台数据(json串)
+        ck = eval(serdata)      //把此json串转换成数组
+        return ck       //返回此数组
+  }
+
+$("#hipt1").autocomplete({ 
+        source: getdata("devicetype")
+  })
+
+$("#hipt71").autocomplete({ 
+        source: getdata("linkswt")
+  })
+
+$("#hipt81").autocomplete({ 
+        source: getdata("linkswt")
+  })
+
+$("#hipt91").autocomplete({ 
+        source: getdata("linkswt")
+  })
+
+$("#nd9").autocomplete({ 
+        source: getdata("nd")
+  })
+
+$("#hipt18").change(function(){
+selectdata = ($("#hipt18").val())
+if (selectdata == "虚拟化/虚拟机")
+{
+$("#lhipt1").hide()
+$("#hipt1").hide()
+$("#lhipt5").hide()
+$("#hipt5").hide()
+$("#lhipt15").hide()
+$("#hipt15").hide()
+$("#ldiskraid").hide()
+$("#diskraid").hide()
+$("#lhipt71").hide()
+$("#hipt71").hide()
+$("#lhipt72").hide()
+$("#hipt72").hide()
+$("#lhipt73").hide()
+$("#hipt73").hide()
+$("#lhipt8").hide()
+$("#hipt8").hide()
+$("#lhipt80").hide()
+$("#hipt80").hide()
+$("#lhipt81").hide()
+$("#hipt81").hide()
+$("#lhipt82").hide()
+$("#hipt82").hide()
+$("#lhipt83").hide()
+$("#hipt83").hide()
+$("#lhipt9").hide()
+$("#hipt9").hide()
+$("#lhipt90").hide()
+$("#hipt90").hide()
+$("#lhipt91").hide()
+$("#hipt91").hide()
+$("#lhipt92").hide()
+$("#hipt92").hide()
+$("#lhipt93").hide()
+$("#hipt93").hide()
+$("#lhipt11").hide()
+$("#hipt11").hide()
+$("#lhipt12").hide()
+$("#hipt12").hide()
+$("#lusize").hide()
+$("#usize").hide()
+$("#hipt94").show()
+$("#lhipt94").show()
+}
+else
+{
+$("#lhipt1").show()
+$("#hipt1").show()
+$("#lhipt5").show()
+$("#hipt5").show()
+$("#ldiskraid").show()
+$("#diskraid").show()
+$("#lhipt71").show()
+$("#hipt71").show()
+$("#lhipt72").show()
+$("#hipt72").show()
+$("#lhipt73").show()
+$("#hipt73").show()
+$("#lhipt8").show()
+$("#hipt8").show()
+$("#lhipt80").show()
+$("#hipt80").show()
+$("#lhipt81").show()
+$("#hipt81").show()
+$("#lhipt82").show()
+$("#hipt82").show()
+$("#lhipt83").show()
+$("#hipt83").show()
+$("#lhipt9").show()
+$("#hipt9").show()
+$("#lhipt90").show()
+$("#hipt90").show()
+$("#lhipt91").show()
+$("#hipt91").show()
+$("#lhipt92").show()
+$("#hipt92").show()
+$("#lhipt93").show()
+$("#hipt93").show()
+$("#lhipt11").show()
+$("#hipt11").show()
+$("#lhipt12").show()
+$("#hipt12").show()
+$("#lusize").show()
+$("#usize").show()
+$("#hipt94").hide()
+$("#lhipt94").hide()
+}
+
+})
+
+</script>
+
+{% endblock %}
+

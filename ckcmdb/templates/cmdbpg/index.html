@@ -1,0 +1,185 @@
+
+<!DOCTYPE html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+        <script src="{{url_for('static', filename='jquery.min.js')}}"></script>
+        <script src="{{url_for('static', filename='highstock.js')}}"></script>
+        <script src="{{url_for('static', filename='exporting.js')}}"></script>
+        <script src="{{url_for('static', filename='bootstrap.min.js')}}"></script>
+    	<link rel="stylesheet" href="{{url_for('static', filename='bootstrap.min.css')}}">
+    <style>
+        #main-nav {
+            margin-left: 1px;
+        }
+
+            #main-nav.nav-tabs.nav-stacked > li > a {
+                padding: 10px 8px;
+                font-size: 12px;
+                font-weight: 600;
+                color: #4A515B;
+                background: #E9E9E9;
+                background: -moz-linear-gradient(top, #FAFAFA 0%, #E9E9E9 100%);
+                background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#FAFAFA), color-stop(100%,#E9E9E9));
+                background: -webkit-linear-gradient(top, #FAFAFA 0%,#E9E9E9 100%);
+                background: -o-linear-gradient(top, #FAFAFA 0%,#E9E9E9 100%);
+                background: -ms-linear-gradient(top, #FAFAFA 0%,#E9E9E9 100%);
+                background: linear-gradient(top, #FAFAFA 0%,#E9E9E9 100%);
+                filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FAFAFA', endColorstr='#E9E9E9');
+                -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FAFAFA', endColorstr='#E9E9E9')";
+                border: 1px solid #D5D5D5;
+                border-radius: 4px;
+            }
+
+                #main-nav.nav-tabs.nav-stacked > li > a > span {
+                    color: #4A515B;
+                }
+
+                #main-nav.nav-tabs.nav-stacked > li.active > a, #main-nav.nav-tabs.nav-stacked > li > a:hover {
+                    color: #FFF;
+                    background: #3C4049;
+                    background: -moz-linear-gradient(top, #4A515B 0%, #3C4049 100%);
+                    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#4A515B), color-stop(100%,#3C4049));
+                    background: -webkit-linear-gradient(top, #4A515B 0%,#3C4049 100%);
+                    background: -o-linear-gradient(top, #4A515B 0%,#3C4049 100%);
+                    background: -ms-linear-gradient(top, #4A515B 0%,#3C4049 100%);
+                    background: linear-gradient(top, #4A515B 0%,#3C4049 100%);
+                    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#4A515B', endColorstr='#3C4049');
+                    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#4A515B', endColorstr='#3C4049')";
+                    border-color: #2B2E33;
+                }
+
+                    #main-nav.nav-tabs.nav-stacked > li.active > a, #main-nav.nav-tabs.nav-stacked > li > a:hover > span {
+                        color: #FFF;
+                    }
+
+            #main-nav.nav-tabs.nav-stacked > li {
+                margin-bottom: 4px;
+            }
+
+        /*定义二级菜单样式*/
+        .secondmenu a {
+            font-size: 10px;
+            color: #4A515B;
+            text-align: center;
+        }
+
+        .navbar-static-top {
+            background-color: #c0c0c0;
+            margin-bottom: 5px;
+        }
+
+        .navbar-brand {
+            background: url('') no-repeat 10px 8px;
+            display: inline-block;
+            vertical-align: middle;
+            padding-left: 50px;
+	    font-weight: bold;
+            color: #212121;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="navbar navbar-duomi navbar-static-top" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/###" id="logo">配置管理系统
+		<a class="navbar-brand" href="/###" id="api">接口说明
+		<a class="navbar-brand" href="/###" id="opsdoc">运维文档
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+				
+		<div class="col-md-2">
+                          <ul id="main-nav" class="nav nav-tabs nav-stacked" style="">
+                    <li class="active">
+                        <a  href="#">
+                            <i class="glyphicon glyphicon-th-large"></i>
+                            首页 		
+                        </a>
+                    </li>
+                    <li>
+                        <a  href="#systemSetting" class="nav-header collapsed" data-toggle="collapse">
+                            <i class="glyphicon glyphicon-cog"></i>
+                            CMDB
+                               <span class="pull-right glyphicon glyphicon-chevron-down"></span>
+                        </a>
+                        <ul id="systemSetting" class="nav nav-list collapse secondmenu" style="height: 0px;">
+                            <li><a  target="mainPage"    href="/cmdb/idc" ><i class="glyphicon sys-idc"></i>数据中心</a></li>
+                            <li><a  target="mainPage"    href="/cmdb/hosts" ><i class="glyphicon sys-hosts"></i>主机</a></li>
+			    <li><a  target="mainPage"    href="/cmdb/count" ><i class="glyphicon sys-count"></i>批量导入</a></li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <a href="#Orsync" class="nav-header collapsed" data-toggle="collapse">
+                            <i class="glyphicon glyphicon-folder-close"></i>
+                            rsync管理
+				<span class="pull-right glyphicon glyphicon-chevron-down"></span>
+                        </a>
+                        <ul id="Orsync" class="nav nav-list collapse secondmenu" style="height: 0px;">
+                            <li><a target="mainPage" href="/orsync/upquery"><i class="glyphicon cmd-batch"></i>实时上线查询</a></li>
+                            <li><a target="mainPage" href="/orsync/md5query"><i class="glyphicon cmd-batch"></i>模块MD5查询</a></li>
+                            <li><a target="mainPage" href="/orsync/oset"><i class="glyphicon cmd-custom"></i>rsyncs设置</a></li>
+                        </ul>
+                    </li>
+			
+                    <li>
+                        <a href="#Zbxquery" class="nav-header collapsed" data-toggle="collapse">
+                            <i class="glyphicon glyphicon-exclamation-sign"></i>
+                            Zabbix告警查询
+                                <span class="pull-right glyphicon glyphicon-chevron-down"></span>
+                        </a>
+                        <ul id="Zbxquery" class="nav nav-list collapse secondmenu" style="height: 0px;">
+                            <li><a target="mainPage" href="/zbxquery/zbxindex"><i class="glyphicon cmd-custom"></i>告警发送状态</a></li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <a href="#cdn" class="nav-header collapsed" data-toggle="collapse">
+                            <i class="glyphicon glyphicon-globe"></i>
+                            	cdn管理
+                                <span class="pull-right glyphicon glyphicon-chevron-down"></span>
+                        </a>
+                        <ul id="cdn" class="nav nav-list collapse secondmenu" style="height: 0px;">
+                            <li><a target="mainPage" href="/cdn/bwindex"><i class="glyphicon cmd-batch"></i>带宽查询</a></li>
+                        </ul>
+                    </li>
+
+                </ul>
+            </div>
+			<!--include leftMenu.html--->
+			
+			<!--mainPage--->
+			<div class="col-md-10">
+				<iframe src="/cmdb/idc"  id="mainPage" name="mainPage" style="width:100%; height:1000px; border:none;" /></iframe>
+			</div>
+			<!--mainPageEnd--->
+	</div>	
+    </div>
+    <script>
+	$(function({
+	showBasePath();
+	})
+	function showBasePath(){
+		var leftMenu=$("#main-nav li a");
+			leftMenu.click(function(event){
+				 event.preventDefault();
+				var href=$(this).attr("href");
+				alert();
+				if(href.indexOf("#")>0)
+				{
+				}else{
+				var frameId=$("#mainPage");
+				var basePath=location.hostname ;
+				frameId.attr("src",basePath+href);
+				}
+			})
+	}
+    </script>
+</body>
+</html>

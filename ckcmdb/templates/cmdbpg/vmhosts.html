@@ -1,0 +1,152 @@
+
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+#add {float:left;width:6%}
+#download {float:left;width:10%}
+#hostsnum {float:left;width:20%}
+</style>
+        <div class="container" style="float:left; width: 2400px; height: 550px;">
+                <div class="row">
+                <p></p>
+                <div id='add'>
+                        <a href="/cmdb/hostform"><button class="btn btn-info aidc"> 添加 +</button></a>
+                        </br>
+                </div>
+                <div id="download">
+                        <a href="/cmdb/download/宿主机.xls"><button class="btn btn-info aidc">导出 Excel</button></a>
+                </div>
+                <div id='hostsnum'>
+                </div>
+                <br></br>
+                <p></p>
+		<table class="table table-striped table-bordered">
+	        	<thead>
+                                <tr>
+                                        <th>地理位置</th>
+                                        <th>设备型号</th>
+                                        <th>主机类型</th>
+					<th>虚拟机个数</th>
+                                        <th>CPU核数</th>
+                                        <th>内存</th>
+                                        <th>磁盘</th>
+                                        <th>网卡1/地址/交换机/端口/vlan</th>
+                                        <th>网卡2/地址/交换机/端口/vlan</th>
+                                        <th>管理卡/地址/交换机/端口/vlan</th>
+                                        <th>操作系统</th>
+                                        <th>业务类型</th>
+                                        <th>代码环境</th>
+                                        <th>SN号</th>
+                                        <th>责任人</th>
+                                        <th>运行状态</th>
+                                        <th>备注</th>
+                                </tr>
+                        </thead>
+
+ 			<tbody id='table-content'>
+ 				
+ 			</tbody>
+		</table>
+		<ul id='pagination' class="pagination">
+			
+		</ul>
+</form>
+
+		</div>
+	</div>
+
+<div class="modal fade" id='updateModal'>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <label class="form-label">所在的机柜</label>
+        <input id='hrack' type="text" class='form-control'>
+      </div>
+      <div class="modal-body">
+        <label class="form-label">在机柜的位置</label>
+        <input id='hsite' type="text" class='form-control'>
+      </div>
+      <div class="modal-body">
+        <label class="form-label">服务类型</label>
+        <input id='sertype' type="text" class='form-control'>
+      </div>
+      <div class="modal-body">
+        <label class="form-label">业务类型</label>
+        <input id='busstyle' type="text" class='form-control'>
+      </div>
+      <div class="modal-body">
+        <label class="form-label">代码环境</label>
+        <input id='codeenv' type="text" class='form-control'>
+      </div>
+      <div class="modal-body">
+        <label class="form-label">备注</label>
+        <input id='hostnote' type="text" class='form-control'>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <button type="button" id='saveUpateBtn' class="btn btn-primary">修改</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<script src="/static/jquery.min.js"></script>
+<script src="/static/bootstrap.min.js"></script>
+
+        <script>
+
+                $(document).on('click','.update',function(){
+                        id = $(this).attr('data-id')
+                        $('#updateModal').modal('show')
+                })
+
+                $("#saveUpateBtn").on('click',function(){
+                        var cmdbtype = 'vmhost'
+                        var hrack = $('#hrack').val()
+                        var hsite = $('#hsite').val()
+                        var sertype = $('#sertype').val()
+                        var busstyle = $('#busstyle').val()
+                        var codeenv = $('#codeenv').val()
+                        var hostnote = $('#hostnote').val()
+                        $.get('/cmdb/update?hrack='+hrack+'&hsite='+hsite+'&sertype='+sertype+'&busstyle='+busstyle+'&codeenv='+codeenv+'&hostnote='+hostnote+'&id='+id+'&cmdbtype='+cmdbtype, function(res){
+                                        alert('修改成功')
+                                        $('#updateModal').modal('hide')
+                                        getList()
+                        })
+                })
+
+                function getList(page){
+                        var cmdbtype = 'vmhost'
+                        var url = '/cmdb/query?cmdbtype='+cmdbtype
+                        if (page) {
+                                url = url+'?page='+page
+                        };
+                        res = $.ajax({url:url,async:false})
+                        // 提取返回的数据（字符串）
+                        rdatas = res.responseText
+                        // 字符串转换成json
+                        jrdatas = JSON.parse(rdatas)
+                        $('#table-content').html(jrdatas.table_str)
+                        $('#hostsnum').html(jrdatas.hostsnum)
+                        return jrdatas.ndname
+                }
+
+                var ndshow = getList()
+
+                $(document).on('click','.dlt',function(){
+			var cmdbtype = 'vmhost'
+                        var id = $(this).attr('data-id')
+                        var url = '/cmdb/delete?id='+id+'&cmdbtype='+cmdbtype
+                        $.get(url,function(res){
+                                        getList()
+                        })
+                })
+
+        </script>
+
+{% endblock %}
+

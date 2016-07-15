@@ -1,0 +1,188 @@
+
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+#addbtn {float:left;margin-top:15px}
+#d1 {float:left;margin-top:15px}
+#t2 {margin-top:15px}
+#adddiv {width:1200px}
+#s1 {width:90px}
+#ndport {width:100px}
+#ndvlan {width:70px}
+#ndipaddr {width:150px}
+#linkndname {width:170px}
+#linkndport {width:100px}
+#linkndaddr {width:150px}
+</style>
+
+	</br>
+	<label><font size="5" face="arial" color="blue">{{ndname}}</font></label>
+	<br></br>
+	<div class="container" style="float:left">
+		<div class="row">
+	  <div class="dataTables_scrollBod" style="float:left; width:1200px">
+		<table class="table table-striped table-bordered table-bordered dataTable no-footer">
+ 			<thead>
+                                <tr>
+                                        <th>地理位置</th>
+                                        <th>设备名</th>
+                                        <th>设备型号</th>
+                                        <th>资产编号</th>
+					<th>责任人</th>
+					<th>运行状态</th>
+                                        <th>备注</th>
+                                </tr>
+ 			</thead>
+ 			<tbody id='table-content1'> 				
+ 			</tbody>
+		</table>
+	  </div>
+	<p></p>
+
+	<div class="row" id="adddiv">
+	<div class="col-md-2" id="addbtn">
+	<button class="btn btn-info aidc"  id="s1"> 添加端口 +</button>
+	</div>
+		<div style="display: none;" id="d1" class="col-md-10">
+			<form class="form-inline" id='addForm'>
+			    <input type="text" class="form-control" id='ndport' name='name' placeholder="端口">&nbsp&nbsp&nbsp&nbsp
+			    <input type="text" class="form-control" id='ndvlan' name='name' placeholder="vlan">&nbsp&nbsp&nbsp&nbsp
+			    <input type="text" class="form-control" id='ndipaddr' name='name' placeholder="IP地址">&nbsp&nbsp&nbsp&nbsp
+			    <input type="text" class="form-control" id='linkndname' name='hd' placeholder="连接的设备名">&nbsp&nbsp&nbsp&nbsp
+			    <input type="text" class="form-control" id='linkndport' name='addr' placeholder="设备端口">&nbsp&nbsp&nbsp&nbsp
+			    <input type="text" class="form-control" id='linkndaddr' name='note' placeholder="设备地址">&nbsp&nbsp&nbsp&nbsp
+			    <button class="btn btn-info aidc"  id="cmtport">提交</button>
+			</form>
+		</div>
+		<p></p>
+</div>
+
+	  <div id="t2" class="dataTables_scrollBod" style="float:left; width:1200px">
+		<table class="table table-striped table-bordered table-bordered dataTable no-footer">
+			<thead>
+				<tr>
+					<th>端口</th>
+					<th>vlan</th>
+					<th>IP地址</th>
+					<th>连接的设备名</th>
+					<th>设备端口</th>
+					<th>设备地址</th>
+				</tr>
+			</thead>
+			<tbody id='table-content2'>
+			</tbody>
+		</table>
+	  </div>
+
+		<ul id='pagination' class="pagination">
+			
+		</ul>
+</form>
+
+		</div>
+	</div>
+<div class="modal fade" id='updateModal'>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+	<label class="form-label">机柜名</label>
+        <input id='idcname' type="text" class='form-control'>
+      </div>
+      <div class="modal-body">
+        <label class="form-label">地理位置</label>
+        <input id='idcaddr' type="text" class='form-control'>
+      </div>
+      <div class="modal-body">
+	<label class="form-label">备注</label>
+        <input id='idcnote' type="text" class='form-control'>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <button type="button" id='saveUpateBtn' class="btn btn-primary">修改</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<script src="/static/jquery.min.js"></script>
+<script src="/static/bootstrap.min.js"></script>
+	<script>
+
+	$("#s1").click(function(){
+	$('#d1').toggle()
+	})
+
+		function getList(ndname){
+			var cmdbtype = 'netdevice'			
+			var url = '/cmdb/query?cmdbtype='+cmdbtype
+			if (ndname) {
+				url = url+'?ndname='+ndname
+			};
+                        res = $.ajax({url:url,async:false})
+			// 提取返回的数据（字符串）
+                        rdatas = res.responseText
+			// 字符串转换成json
+                        jrdatas = JSON.parse(rdatas)
+                        $('#table-content1').html(jrdatas.table_str1)
+                        $('#table-content2').html(jrdatas.table_str2)
+                        return jrdatas.ndname
+		}
+
+		var ndshow = getList()
+
+		$("#cmtport").click(function(){ 
+			var ndname = ndshow
+    			var ndport = $("#ndport").val()
+    			var ndvlan = $("#ndvlan").val()
+    			var ndipaddr = $("#ndipaddr").val()
+    			var linkndname = $("#linkndname").val()
+    			var linkndport = $("#linkndport").val()
+    			var linkndaddr = $("#linkndaddr").val()
+			//var cmdbtype = 'ndport'
+    		//	var url='/cmdb/add?ndname='+ndname+'&ndport='+ndport+'&ndvlan='+ndvlan+'&ndipaddr='+ndipaddr+'&linkndname='+linkndname+'&linkndport='+linkndport+'&linkndaddr='+linkndaddr+'&cmdbtype='+cmdbtype
+		//	$.ajax({url:url,async:false})
+		//	url1='/cmdb/ndquerytest?ndname='+ndname
+		//	res = $.ajax({url:url1,async:false})
+		//	rdatas = res.responseText
+		//	$('#table-content2').html(jrdatas.table_str2)
+			
+	 		$.ajax({
+             		type: "GET",
+             		url: "/cmdb/add",
+             		data: {ndname:ndname, ndport:ndport, ndvlan:ndvlan, ndipaddr:ndipaddr, linkndname:linkndname, linkndport:linkndport, linkndaddr:linkndaddr, cmdbtype:'ndport'},
+             		dataType: "json",
+             		success: function(data){},
+	     		error: function(){},
+         		})
+
+         		$.ajax({
+             		type: "GET",
+             		url: "/cmdb/query",
+             		data: {ndname:ndname, cmdbtype:'netdevice'},
+             		dataType: "json",
+             		success: function(data){
+			$('#table-content2').html(jrdatas.table_str2)
+			},
+             		error: function(){},
+         		})
+
+  		})
+
+                $(document).on('click','.dlt',function(){
+			cmdbtype = 'ndport'
+                        var id = $(this).attr('data-id')
+                        var url = '/cmdb/delete?id='+id+'&ndname='+ndshow+'&cmdbtype='+cmdbtype
+                        $.get(url,function(res){
+                        	getList()
+                        })
+                })
+
+
+	</script>
+
+{% endblock %}
+

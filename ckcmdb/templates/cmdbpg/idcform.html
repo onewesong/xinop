@@ -1,0 +1,96 @@
+
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+.inp {width:330px; height:30px;}
+.cbtn {width:50px; height:30px;}
+.lx {width:200px; height:30px;}
+</style>
+<br/>
+<ul id="myTab" class="nav nav-tabs">
+   <li class="active"><a href="#idc" data-toggle="tab">机房</a></li>
+   <li><a href="#rack" data-toggle="tab">机柜</a></li>
+</ul>
+<br/>
+<div id="myTabContent" class="tab-content">
+  <div class="tab-pane fade in active" id="idc">
+	<label>机房名</label>&nbsp&nbsp
+	<input id="idc1" type="text" name="idcname" class="inp" placeholder="机房名称"/><br/>
+	<br/>
+	<label>地理位置</label>&nbsp&nbsp
+	<input id="idc2" type="text" name="idcaddr" class="inp" placeholder="地理位置"/><br/>
+	<br/>
+	<label>联系人</label>&nbsp&nbsp
+	<input id="idc3" type="text" name="idccontacts" class="lx" placeholder="姓名"/>&nbsp&nbsp&nbsp&nbsp
+	<label>联系方式</label>&nbsp&nbsp
+	<input id="idc5" type="text" name="idccontacts" class="lx" placeholder="电话号码"/>
+	<br/>
+	<br/>
+	<label>备注</label>&nbsp&nbsp
+	<input id="idc4" type="text" name="idcnote" class="inp" placeholder="备注"/><br/>
+	<br/>
+	<br/>
+	<button id='idcbtn' type="button" class="btn btn-primary">提交</button>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+	<br></br>
+	<br></br>
+	<div id="idcres">
+	</div>
+  </div>
+
+  <div class="tab-pane fade" id="rack">
+	<label>机柜名</label>&nbsp&nbsp
+	<input id="rack1" type="text" name="rackname" class="inp" placeholder="名称需要带rack（如：亦庄_rack_1）"/><br/>
+	<br/>
+	<label>所在机房</label>&nbsp&nbsp
+	<input id="rack2" type="text" name="rackidc" class="inp" placeholder="所属机房"/><br/>
+	<br/>
+	<label>地理位置</label>&nbsp&nbsp
+	<input id="rack4" type="text" name="rackaddr" class="inp" placeholder="在机房内的位置（如：第3排第7个）"/><br/>
+	<br/>
+	<label>机柜大小</label>&nbsp&nbsp
+	<input id="rack5" type="text" name="rackaddr" class="inp" placeholder="机柜支持的U数（如：20U）"/><br/>
+	<br/>
+	<label>备注</label>&nbsp&nbsp
+	<input id="rack6" type="text" name="racknote" class="inp" placeholder="备注"/><br/>
+	<br/>
+	<br/>
+	<input id='rackbtn' type="submit" class="cbtn" value="提交" />&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+	<input id='rsetbtn' type="reset" class="cbtn" value="重置">
+	<br></br>
+	<div id="rackres">
+        </div>
+  </div>
+</div>
+
+</br>
+<script>
+$("#idcbtn").click(function(){
+        var idcname=$('#idc1').val()
+        var idcaddr=$('#idc2').val()
+        var idccontacts=$('#idc3').val()
+        var idcnote=$('#idc4').val()
+        var idcphone=$('#idc5').val()
+	var cmdbtype = 'idc'
+        var url='/cmdb/add?idcname='+idcname+'&idcaddr='+idcaddr+'&idccontacts='+idccontacts+'&idcnote='+idcnote+'&idcphone='+idcphone+'&cmdbtype='+cmdbtype
+        $.getJSON(url,function(resdata){ 
+        $('#idcres').html(resdata.info)
+    })
+  })
+
+$("#rackbtn").click(function(){
+        var rackname=$('#rack1').val()
+        var rackidc=$('#rack2').val()
+        var rackaddr=$('#rack4').val()
+        var racksize=$('#rack5').val()
+        var racknote=$('#rack6').val()
+	var cmdbtype = 'rack'
+        var url='/cmdb/add?rackname='+rackname+'&rackidc='+rackidc+'&rackaddr='+rackaddr+'&racksize='+racksize+'&racknote='+racknote+'&cmdbtype='+cmdbtype
+        $.getJSON(url,function(resdata){ 
+        $('#rackres').html(resdata.info)
+    })
+  })
+</script>
+
+{% endblock %}
+

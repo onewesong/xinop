@@ -1,0 +1,448 @@
+
+
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+#s1 {height:40px;width:150px;padding-left:10px;margin-left:10px;margin-top:30px}
+#scrs1 {height:40px;width:150px;padding-left:10px;margin-left:10px;margin-top:30px}
+#configs1 {height:40px;width:150px;padding-left:10px;margin-left:10px;margin-top:30px}
+input#shuru {height:40px;width:170px;margin-top:30px}
+input#scrshuru {height:40px;width:190px;margin-top:30px}
+input#configshuru {height:40px;width:190px;margin-top:30px}
+.opn {font-size:20px}
+#cmdstyle {height:40px;width:200px;margin-left:1px;margin-top:30px}
+#cmdcontent {height:40px;width:330px;margin-top:30px;margin-left:30px}
+#scrcmdcontent {height:40px;width:350px;margin-top:30px;margin-left:30px}
+#configcmdcontent {height:40px;width:350px;margin-top:30px;margin-left:30px}
+#cmdbtn {margin-top:32px}
+#scrcmdbtn {margin-top:30px}
+#configcmdbtn {margin-top:30px}
+#dropdownMenu1 {margin-top:50px}
+#minions-result {margin-top:30px;padding-left:35px}
+#scrminions-result {margin-top:30px;padding-left:35px}
+#configminions-result {margin-top:30px;padding-left:35px}
+#showminions {width:110px;margin-left:20px;margin-top:50px;background-color:#f0f0f0}
+#gifld {float:right}
+#scrgifld {float:right}
+#configgifld {float:right}
+//#imgld1 {margin-right:200px}
+#dropdownMenu1 {background-color:#f0f0f0}
+//#dropdownMenu1 {width:100px}
+//#get-pagenum {margin-left:50px}
+ul li {font-weight:bold}
+</style>
+
+<br></br>
+<ul id="myTab" class="nav nav-tabs">
+   <li class="active"><a href="#cmdexec" data-toggle="tab">执行命令</a></li>
+   <li><a href="#scriptexec" data-toggle="tab">执行脚本</a></li>
+   <li><a href="#configexec" data-toggle="tab">同步配置</a></li>
+</ul>
+
+<div id="myTabContent" class="tab-content">
+   <div class="tab-pane fade in active" id="cmdexec">
+<p></p>
+<div class="row">
+        <div class="col-md-2">
+            <select class="form-control" id="s1">
+                <option disabled selected>服务器类型</option>
+                <option class="opn" id="op1">匹配服务器分组</option>
+                <option class="opn" id="op2">匹配服务器ID</option>
+                <option class="opn" id="op3">匹配所有服务器</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+                <input type="text" class="form-control" id="shuru" placeholder="172.16.90.*">
+        </div>
+        <div class="col-md-2">
+                <input type="text" class="form-control" id="cmdstyle" placeholder="cmd.run">
+        </div>
+        <div class="col-md-4">
+                <input type="text" class="form-control" id="cmdcontent" placeholder="free -m">
+        </div>
+        <div class="col-md-2">
+                <button class="btn btn-primary" data-toggle="button" id="cmdbtn">OK，提交执行</button>
+        </div>
+        <div class="col-md-8">
+		<div class="dropdown" class="col-md-3">
+   <button id="showminions" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+      查看minions <span class="caret"></span>
+   </button>
+		<ul class="dropdown-menu" role="menu" id="dropdownmns">
+		<li class="mnsshow" ckvalue="mnsid"><a href="#">minions ID</a></li>
+                <li class="divider"></li>
+		<li class="mnsshow" ckvalue="mnsgrp"><a href="#">minions 分组</a></li>
+		</ul>
+		</div>
+		<div style="display:none;" class="col-md-5" id="gifld">
+			<img id="imgld1" src="/static/imgs/ld1.gif">
+		</div>
+		<div id="minions-result"></div>
+        </div>
+
+        <div class="col-md-4 btn-group" id="dropdowndiv">
+                <div class="dropdown">
+                <button id="dropdownMenu1" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                查看历史
+                <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                <li class="htime" ckvalue="day3"><a href="#">最近三天</a></li>
+                <li role="presentation" class="divider"></li>
+                <li class="htime" ckvalue="week1"><a href="#">最近一周</a></li>
+                <li role="presentation" class="divider"></li>
+                <li class="htime" ckvalue="week2"><a href="#">最近两周</a></li>
+                </ul>
+                </div>
+	<br></br>
+		<div id="get-history"></div>
+		<ul id="get-pagenum" class="pagination"></ul>
+        </div>
+</div>
+
+<script>
+$("#s1").change(function(){
+var sltdata = ($("#s1").val())
+var serverinfo = ''
+if (sltdata=="匹配服务器分组"){
+        serverinfo = "例：yizhuang-db"
+}
+else if (sltdata=="匹配服务器ID"){
+        serverinfo = "（支持正则）例：*nginx*"
+        }
+else {
+        serverinfo = "输入 * 即可"
+}
+        
+$('#shuru').attr('placeholder',serverinfo)
+})
+
+var data1 = [
+                        "cmd.run",
+                        "grains.item",
+                        "state.sls",
+		]
+
+//命令的输入补全用本地数据 data1
+$( "#cmdstyle" ).autocomplete({
+        source: data1
+  });   
+
+function getcmd(){
+	var cmdtype = $("#cmdstyle").val()
+	if (cmdtype=="cmd.run"){
+		return [
+			"free -m",
+			"df -h",
+			"ls -l",
+			"uptime"
+			]
+	}
+	else if (cmdtype=="grains.item"){
+		return [
+			"os",
+                        "mem_total",
+                        "manufacturer",
+                        "selinux",
+                        "fqdn_ip4",
+                        "ip_interfaces",
+                        "ip_interfaces:eth0",
+			]
+	}
+     }
+
+$("#cmdcontent").focus(function(){
+$("#cmdcontent").autocomplete({ 
+        source: getcmd()
+  }) 
+})
+
+
+$(".mnsshow").click(function(){
+	var mnsvalue = $(this).attr("ckvalue")
+        res = $.ajax({url:'/command/minionsdata/?mnsinfo='+mnsvalue,async:false})
+        mdatas = res.responseText
+        $('#minions-result').html(mdatas)
+})
+
+$(".htime").click(function(){
+	var qtime=$(this).attr("ckvalue")
+	var url='/command/history/?qtime='+qtime
+	$.getJSON(url,function(hisdata){ 
+	$('#get-history').html(hisdata.li_str)
+	$('#get-pagenum').html(hisdata.pagation_str)
+    })
+  })
+
+$(document).on('click','.hpage',function(){
+	var pagetime=$(this).attr("hpagevalue")
+	var pagenum=$(this).attr('data-page')
+	var url='/command/history/?qtime='+pagetime+'&qpage='+pagenum
+	$.getJSON(url,function(hisdata){ 
+	$('#get-history').html(hisdata.li_str)
+	$('#get-pagenum').html(hisdata.pagation_str)
+    })
+  })
+
+  $("#cmdbtn").click(function(){ 
+    $("#cmdbtn").attr("disabled",true)
+    $("#gifld").show()
+    var servalue = $("#shuru").val()
+    var cmdtype = $("#cmdstyle").val()
+    var cmdvalue = $("#cmdcontent").val()
+    var url='/command/batchcmd/?serinfo='+servalue+'&cmdhead='+cmdtype+'&cmdinfo='+cmdvalue
+    $.getJSON(url,function(retdata){ 
+    $("#gifld").hide()
+    $("#cmdbtn").attr("disabled",false)
+    $('#minions-result').html(retdata)
+      })
+  })
+                
+</script>
+   </div>
+
+   <div class="tab-pane fade" id="scriptexec">
+<p></p>
+<div class="row">
+        <div class="col-md-2">
+            <select class="form-control" id="scrs1">
+                <option disabled selected>服务器类型...</option>
+                <option class="opn" id="op1">匹配服务器分组</option>
+                <option class="opn" id="op2">匹配服务器ID</option>
+                <option class="opn" id="op3">匹配所有服务器</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+                <input type="text" class="form-control" id="scrshuru" placeholder="">
+        </div>
+        <div class="col-md-4">
+                <input type="text" class="form-control" id="scrcmdcontent" placeholder="输入要执行的脚本名（scripts开头）">
+        </div>
+        <div class="col-md-2">
+                <button class="btn btn-primary" data-toggle="button" id="scrcmdbtn">OK，提交执行</button>
+        </div>
+        <div class="col-md-8">
+		<div class="dropdown" class="col-md-3">
+   <button id="showminions" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+      查看minions <span class="caret"></span>
+   </button>
+		<ul class="dropdown-menu" role="menu" id="dropdownmns">
+		<li class="mnsshow" ckvalue="mnsid"><a href="#">minions ID</a></li>
+                <li class="divider"></li>
+		<li class="mnsshow" ckvalue="mnsgrp"><a href="#">minions 分组</a></li>
+		</ul>
+		</div>
+		<div style="display:none;" class="col-md-5" id="scrgifld">
+			<img id="imgld1" src="/static/imgs/ld1.gif">
+		</div>
+		<div id="scrminions-result"></div>
+        </div>
+
+        <div class="col-md-4 btn-group" id="dropdowndiv">
+                <div class="dropdown">
+                <button id="dropdownMenu1" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                查看历史
+                <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                <li class="htime" ckvalue="day3"><a href="#">最近三天</a></li>
+                <li role="presentation" class="divider"></li>
+                <li class="htime" ckvalue="week1"><a href="#">最近一周</a></li>
+                <li role="presentation" class="divider"></li>
+                <li class="htime" ckvalue="week2"><a href="#">最近两周</a></li>
+                </ul>
+                </div>
+	<br></br>
+		<div id="scrget-history"></div>
+		<ul id="scrget-pagenum" class="pagination"></ul>
+        </div>
+</div>
+
+<script>
+$("#scrs1").change(function(){
+var sltdata = ($("#scrs1").val())
+var serverinfo = ''
+if (sltdata=="匹配服务器分组"){
+        serverinfo = "例：yizhuang-db"
+}
+else if (sltdata=="匹配服务器ID"){
+        serverinfo = "（支持正则）例：*nginx*"
+        }
+else {
+        serverinfo = "输入 * 即可"
+}
+        
+$('#scrshuru').attr('placeholder',serverinfo)
+})
+
+
+//调函数，获取其返回值
+
+$(".mnsshow").click(function(){
+	var mnsvalue = $(this).attr("ckvalue")
+        res = $.ajax({url:'/command/minionsdata/?mnsinfo='+mnsvalue,async:false})
+        mdatas = res.responseText
+        $('#scrminions-result').html(mdatas)
+})
+
+$(".htime").click(function(){
+	var qtime=$(this).attr("ckvalue")
+	var url='/command/history/?qtime='+qtime
+	$.getJSON(url,function(hisdata){ 
+	$('#scrget-history').html(hisdata.li_str)
+	$('#scrget-pagenum').html(hisdata.pagation_str)
+    })
+  })
+
+$(document).on('click','.hpage',function(){
+	var pagetime=$(this).attr("hpagevalue")
+	var pagenum=$(this).attr('data-page')
+	var url='/command/history/?qtime='+pagetime+'&qpage='+pagenum
+	$.getJSON(url,function(hisdata){ 
+	$('#scrget-history').html(hisdata.li_str)
+	$('#scrget-pagenum').html(hisdata.pagation_str)
+    })
+  })
+
+  $("#scrcmdbtn").click(function(){ 
+    $("#scrcmdbtn").attr("disabled",true)
+    $("#scrgifld").show()
+    var servalue = $("#scrshuru").val()
+    var cmdtype = "cmd.script"
+    var cmdvalue = "salt://"+$("#scrcmdcontent").val()
+    var url='/command/batchcmd/?serinfo='+servalue+'&cmdhead='+cmdtype+'&cmdinfo='+cmdvalue
+    $.getJSON(url,function(retdata){ 
+    $("#scrgifld").hide()
+    $("#scrcmdbtn").attr("disabled",false)
+    $('#scrminions-result').html(retdata)
+      })
+  })
+                
+</script>
+
+   </div>
+
+   <div class="tab-pane fade" id="configexec">
+<p></p>
+<div class="row">
+        <div class="col-md-2">
+            <select class="form-control" id="configs1">
+                <option disabled selected>服务器类型...</option>
+                <option class="opn" id="op1">匹配服务器分组</option>
+                <option class="opn" id="op2">匹配服务器ID</option>
+                <option class="opn" id="op3">匹配所有服务器</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+                <input type="text" class="form-control" id="configshuru" placeholder="">
+        </div>
+        <div class="col-md-4">
+                <input type="text" class="form-control" id="configcmdcontent" placeholder="输入要同步的文件名（files开头）">
+        </div>
+        <div class="col-md-2">
+                <button class="btn btn-primary" data-toggle="button" id="configcmdbtn">OK，提交执行</button>
+        </div>
+        <div class="col-md-8">
+		<div class="dropdown" class="col-md-3">
+   <button id="showminions" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+      查看minions <span class="caret"></span>
+   </button>
+		<ul class="dropdown-menu" role="menu" id="dropdownmns">
+		<li class="mnsshow" ckvalue="mnsid"><a href="#">minions ID</a></li>
+                <li class="divider"></li>
+		<li class="mnsshow" ckvalue="mnsgrp"><a href="#">minions 分组</a></li>
+		</ul>
+		</div>
+		<div style="display:none;" class="col-md-5" id="configgifld">
+			<img id="imgld1" src="/static/imgs/ld1.gif">
+		</div>
+		<div id="configminions-result"></div>
+        </div>
+
+        <div class="col-md-4 btn-group" id="dropdowndiv">
+                <div class="dropdown">
+                <button id="dropdownMenu1" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                查看历史
+                <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                <li class="htime" ckvalue="day3"><a href="#">最近三天</a></li>
+                <li role="presentation" class="divider"></li>
+                <li class="htime" ckvalue="week1"><a href="#">最近一周</a></li>
+                <li role="presentation" class="divider"></li>
+                <li class="htime" ckvalue="week2"><a href="#">最近两周</a></li>
+                </ul>
+                </div>
+	<br></br>
+		<div id="configget-history"></div>
+		<ul id="configget-pagenum" class="pagination"></ul>
+        </div>
+</div>
+
+<script>
+$("#configs1").change(function(){
+var sltdata = ($("#configs1").val())
+var serverinfo = ''
+if (sltdata=="匹配服务器分组"){
+        serverinfo = "例：yizhuang-db"
+}
+else if (sltdata=="匹配服务器ID"){
+        serverinfo = "（支持正则）例：*nginx*"
+        }
+else {
+        serverinfo = "输入 * 即可"
+}
+        
+$('#configshuru').attr('placeholder',serverinfo)
+})
+
+
+$(".mnsshow").click(function(){
+	var mnsvalue = $(this).attr("ckvalue")
+        res = $.ajax({url:'/command/minionsdata/?mnsinfo='+mnsvalue,async:false})
+        mdatas = res.responseText
+        $('#configminions-result').html(mdatas)
+})
+
+$(".htime").click(function(){
+	var qtime=$(this).attr("ckvalue")
+	var url='/command/history/?qtime='+qtime
+	$.getJSON(url,function(hisdata){ 
+	$('#configget-history').html(hisdata.li_str)
+	$('#configget-pagenum').html(hisdata.pagation_str)
+    })
+  })
+
+$(document).on('click','.hpage',function(){
+	var pagetime=$(this).attr("hpagevalue")
+	var pagenum=$(this).attr('data-page')
+	var url='/command/history/?qtime='+pagetime+'&qpage='+pagenum
+	$.getJSON(url,function(hisdata){ 
+	$('#configget-history').html(hisdata.li_str)
+	$('#configget-pagenum').html(hisdata.pagation_str)
+    })
+  })
+
+  $("#configcmdbtn").click(function(){ 
+    $("#configcmdbtn").attr("disabled",true)
+    $("#configgifld").show()
+    var servalue = $("#configshuru").val()
+    var cmdtype = "state.sls"
+    var cmdvalue = $("#configcmdcontent").val()
+    var url='/command/batchcmd/?serinfo='+servalue+'&cmdhead='+cmdtype+'&cmdinfo='+cmdvalue
+    $.getJSON(url,function(retdata){ 
+    $("#configgifld").hide()
+    $("#configcmdbtn").attr("disabled",false)
+    $('#configminions-result').html(retdata)
+      })
+  })              
+</script>
+
+   </div>
+
+</div>
+
+
+{% endblock %}
+

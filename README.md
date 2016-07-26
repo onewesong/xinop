@@ -9,7 +9,7 @@ xinop 是一个基于 Flask 跟 Bootstrap 开发的 运维管理系统 ，包含
 5. 实现Zabbix告警结果的显示，多平台CDN流量的实时显示。
 6. 实现Saltstack web ui，对登录用户的Saltstack使用权限做二次限制，操作审计功能，危险命令过滤功能。
 
-#xinopha还在持续开发完善阶段，有问题欢迎交流 
+#xinop仍在持续开发完善阶段，有问题欢迎交流 
 我的邮箱: chenkun1998@163.com
 
 #相关预览

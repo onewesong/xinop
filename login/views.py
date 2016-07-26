@@ -9,7 +9,6 @@ from flask import Flask,request,render_template,Blueprint,redirect,session
 from ldap_class import ldap_xin
 loginpg = Blueprint('loginbp',__name__,template_folder='templates',static_folder='static')
 
-#来的是get请求:显示index.html页面,来的是post请求:接收传来的监控数据并入库
 @loginpg.route("/login/", methods = ["POST","GET"])
 def login():
         if request.method == 'GET':

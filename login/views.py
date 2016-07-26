@@ -34,4 +34,3 @@ def logout():
         session.pop('password',None)
         return redirect('/login/')
 
-
